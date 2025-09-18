@@ -12,8 +12,8 @@ router = APIRouter()
 
 @router.post("/", response_model=Box, status_code=status.HTTP_201_CREATED)
 async def create_box(
-    workspace_id: str,
-    payload: BoxCreate,
+    workspace_id: str = Query(..., description="Workspace ID"),
+    payload: BoxCreate = ...,
     db = Depends(Database.get_db)
 ) -> Box:
     """Create a new box."""
@@ -45,9 +45,9 @@ async def create_box(
 
 @router.get("/", response_model=List[Box])
 async def list_boxes(
-    workspace_id: str,
-    q: Optional[str] = None,
-    status: Optional[str] = None,
+    workspace_id: str = Query(..., description="Workspace ID"),
+    q: Optional[str] = Query(None, description="Search query"),
+    status: Optional[str] = Query(None, description="Filter by status"),
     skip: int = Query(0, ge=0),
     limit: int = Query(25, ge=1, le=100),
     db = Depends(Database.get_db)
@@ -80,8 +80,8 @@ async def list_boxes(
 
 @router.get("/{box_id}", response_model=Box)
 async def get_box(
-    workspace_id: str,
-    box_id: str,
+    workspace_id: str = Query(..., description="Workspace ID"),
+    box_id: str = ...,
     db = Depends(Database.get_db)
 ) -> Box:
     """Get a specific box by ID."""

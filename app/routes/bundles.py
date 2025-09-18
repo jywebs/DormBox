@@ -10,8 +10,8 @@ router = APIRouter()
 
 @router.post("/", response_model=Bundle, status_code=status.HTTP_201_CREATED)
 async def create_bundle(
-    workspace_id: str,
-    payload: BundleCreate,
+    workspace_id: str = Query(..., description="Workspace ID"),
+    payload: BundleCreate = ...,
     db = Depends(Database.get_db)
 ) -> Bundle:
     """Create a new bundle."""
@@ -49,8 +49,8 @@ async def create_bundle(
 
 @router.get("/", response_model=List[Bundle])
 async def list_bundles(
-    workspace_id: str,
-    q: Optional[str] = None,
+    workspace_id: str = Query(..., description="Workspace ID"),
+    q: Optional[str] = Query(None, description="Search query"),
     skip: int = Query(0, ge=0),
     limit: int = Query(25, ge=1, le=100),
     db = Depends(Database.get_db)
@@ -81,8 +81,8 @@ async def list_bundles(
 
 @router.get("/{bundle_id}", response_model=Bundle)
 async def get_bundle(
-    workspace_id: str,
-    bundle_id: str,
+    workspace_id: str = Query(..., description="Workspace ID"),
+    bundle_id: str = ...,
     db = Depends(Database.get_db)
 ) -> Bundle:
     """Get a specific bundle by ID."""

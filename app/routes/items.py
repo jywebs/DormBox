@@ -11,8 +11,8 @@ router = APIRouter()
 
 @router.post("/", response_model=Item, status_code=status.HTTP_201_CREATED)
 async def create_item(
-    workspace_id: str,
-    payload: ItemCreate,
+    workspace_id: str = Query(..., description="Workspace ID"),
+    payload: ItemCreate = ...,
     db = Depends(Database.get_db)
 ) -> Item:
     """Create a new item."""
@@ -51,11 +51,11 @@ async def create_item(
 
 @router.get("/", response_model=List[Item])
 async def list_items(
-    workspace_id: str,
-    q: Optional[str] = None,
-    box_id: Optional[str] = None,
-    bundle_id: Optional[str] = None,
-    status: Optional[str] = None,
+    workspace_id: str = Query(..., description="Workspace ID"),
+    q: Optional[str] = Query(None, description="Search query"),
+    box_id: Optional[str] = Query(None, description="Filter by box ID"),
+    bundle_id: Optional[str] = Query(None, description="Filter by bundle ID"),
+    status: Optional[str] = Query(None, description="Filter by status"),
     skip: int = Query(0, ge=0),
     limit: int = Query(25, ge=1, le=100),
     db = Depends(Database.get_db)
@@ -92,8 +92,8 @@ async def list_items(
 
 @router.get("/{item_id}", response_model=Item)
 async def get_item(
-    workspace_id: str,
-    item_id: str,
+    workspace_id: str = Query(..., description="Workspace ID"),
+    item_id: str = ...,
     db = Depends(Database.get_db)
 ) -> Item:
     """Get a specific item by ID."""
